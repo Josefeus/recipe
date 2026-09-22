@@ -67,15 +67,20 @@ function bullets(lines) {
     .filter(Boolean)
 }
 
+/** markdown 表格的对齐分隔单元格，如 `---`、`:---`、`---:`、`:---:`。 */
+function isTableDivider(cell) {
+  return /^:?-+:?$/.test(cell)
+}
+
 /** `| 热量 | 179 Kcal |` → { label: '热量', value: '179 Kcal' } */
-function parseNutrition(lines) {
+export function parseNutrition(lines) {
   const rows = []
   for (const line of lines) {
     const cells = line.split('|').map((c) => c.trim())
     if (cells.length < 4) continue
     const [, label, value] = cells
     if (!label || !value) continue
-    if (/^-+$/.test(label) || label === '项目') continue
+    if (isTableDivider(label) || label === '项目') continue
     rows.push({ label, value })
   }
   return rows
@@ -243,4 +248,5 @@ function main() {
   }
 }
 
-main()
+// 仅在直接执行时生成数据；被单测 import 时不产生副作用。
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main()
