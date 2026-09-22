@@ -1,0 +1,8 @@
+node_modules/
+dist/
+public/images/
+src/data/
+*.local
+.DS_Store
+.vscode/
+.idea/

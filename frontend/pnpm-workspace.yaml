@@ -1,0 +1,5 @@
+# pnpm 10+ 将 settings 从 package.json 的 pnpm 字段迁移到此处。
+# esbuild / vue-demi 需要执行安装后脚本，否则 Vite 无法构建。
+allowBuilds:
+  esbuild: true
+  vue-demi: true

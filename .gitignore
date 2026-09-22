@@ -1,0 +1,35 @@
+# --- Dependencies ---
+node_modules/
+
+# --- Build output ---
+dist/
+target/
+*.tsbuildinfo
+
+# --- Generated recipe data ---
+# Rebuilt by `pnpm data:build` from data-source/CookLikeHOC.
+frontend/src/data/
+frontend/public/images/
+
+# --- Upstream reference clone ---
+# Full clone of Gar-b-age/CookLikeHOC with its own .git; re-clone it when needed.
+# data-source/CookLikeHOC is the trimmed copy actually consumed by the build.
+_cooklikehoc/
+
+# --- Local environment ---
+*.local
+.env
+.env.*
+!.env.example
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Logs / coverage ---
+*.log
+npm-debug.log*
+pnpm-debug.log*
+coverage/
