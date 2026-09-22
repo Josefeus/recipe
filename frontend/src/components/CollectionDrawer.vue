@@ -271,7 +271,8 @@ function clearAll(): void {
 
 .row__thumb {
   flex: none;
-  width: 54px;
+  /* 与卡片、台面预览保持同一比例，列表里的缩略图也不再被裁掉。 */
+  width: 72px;
   height: 54px;
   overflow: hidden;
   border-radius: 11px;

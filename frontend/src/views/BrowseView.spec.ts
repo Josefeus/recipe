@@ -34,7 +34,9 @@ async function mountBrowse(path = '/browse') {
   const router: Router = createRouter({ history: createMemoryHistory(), routes })
   await router.push(path)
   await router.isReady()
-  const wrapper = mount(BrowseView, { global: { plugins: [pinia, router] } })
+  const wrapper = mount(BrowseView, {
+    global: { plugins: [pinia, router], stubs: { teleport: true } },
+  })
   await flushPromises()
   return { wrapper, router, store: usePickerStore() }
 }
@@ -88,5 +90,22 @@ describe('BrowseView', () => {
     expect(store.current?.category).toBe('汤')
     expect(path).toBe('/')
     expect(router.currentRoute.value.path).toBe('/')
+  })
+
+  it('点图片是放大看实拍图，不会顺手把菜放回台面', async () => {
+    const { wrapper, router } = await mountBrowse('/browse')
+
+    // 没有实拍图的卡片点图等于选中，所以这里挑一张有图的。
+    const card = wrapper.findAll('.dish-card').find((item) => item.find('img').exists())
+    if (!card) throw new Error('测试数据里没有带实拍图的菜')
+
+    await card.get('.dish-card__media').trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('.lightbox').exists()).toBe(true)
+    expect(router.currentRoute.value.path).toBe('/browse')
+
+    await wrapper.get('.lightbox__close').trigger('click')
+    expect(wrapper.find('.lightbox').exists()).toBe(false)
   })
 })

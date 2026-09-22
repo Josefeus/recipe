@@ -47,6 +47,23 @@ describe('DishStage', () => {
     expect(wrapper.emitted('roll')).toHaveLength(1)
   })
 
+  it('点预览图抛出 zoom，方便放大看实拍图', async () => {
+    const wrapper = mountStage()
+    expect(wrapper.get('.stage__media').attributes('disabled')).toBeUndefined()
+
+    await wrapper.get('.stage__media').trigger('click')
+
+    expect(wrapper.emitted('zoom')?.[0]).toEqual([recipe])
+  })
+
+  it('菜没有实拍图时预览图不可点，也不抛 zoom', async () => {
+    const plain = { ...recipe, image: null }
+    const wrapper = mountStage({ recipe: plain })
+
+    expect(wrapper.get('.stage__media').attributes('disabled')).toBeDefined()
+    expect(wrapper.find('.dish-zoom').exists()).toBe(false)
+  })
+
   it('「就它了」与「收藏」分别抛出事件', async () => {
     const wrapper = mountStage()
     const buttons = wrapper.findAll('.stage__actions .btn')

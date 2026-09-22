@@ -9,6 +9,7 @@ defineProps<{
 
 const emit = defineEmits<{
   select: [recipe: Recipe]
+  zoom: [recipe: Recipe]
   toggleFavorite: [recipe: Recipe]
 }>()
 </script>
@@ -21,6 +22,7 @@ const emit = defineEmits<{
         :favorited="favoriteIds?.includes(recipe.id) ?? false"
         show-favorite
         @select="emit('select', $event)"
+        @zoom="emit('zoom', $event)"
         @toggle-favorite="emit('toggleFavorite', $event)"
       />
     </li>

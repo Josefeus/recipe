@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import DishGrid from '@/components/DishGrid.vue'
 import FilterBar from '@/components/FilterBar.vue'
+import ImageLightbox from '@/components/ImageLightbox.vue'
 import { usePickerStore } from '@/stores/picker'
 import type { Recipe } from '@/types/recipe'
 
@@ -13,6 +14,7 @@ const router = useRouter()
 
 const favoriteIds = computed(() => store.favorites.map((item) => item.id))
 const scopeLabel = computed(() => (store.filters.category ? store.filters.category : '全部菜品'))
+const zoomed = ref<Recipe | null>(null)
 
 function categoryFromQuery(): string | null {
   const raw = route.query.category
@@ -67,7 +69,7 @@ watch(
       都摊开给你看
     </h1>
     <p class="browse__sub">
-      共 {{ store.pool.length }} 道 · 点任意一张，就把它放回决定器；右上角的心可以直接收藏。
+      共 {{ store.pool.length }} 道 · 点图片看大图，点标题就把它放回决定器；右上角的心可以直接收藏。
     </p>
   </section>
 
@@ -87,6 +89,7 @@ watch(
     :items="store.pool"
     :favorite-ids="favoriteIds"
     @select="pick"
+    @zoom="zoomed = $event"
     @toggle-favorite="store.toggleFavorite($event.id)"
   />
 
@@ -94,6 +97,8 @@ watch(
     <strong>这个条件下没有菜</strong>
     <p>把筛选放宽一点，或者点「重置」回到全部 {{ store.allRecipes.length }} 道。</p>
   </div>
+
+  <ImageLightbox :recipe="zoomed" @close="zoomed = null" />
 </template>
 
 <style scoped>

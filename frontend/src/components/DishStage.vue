@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 import DishThumb from '@/components/DishThumb.vue'
+import DishZoomBadge from '@/components/DishZoomBadge.vue'
 import { REPO_URL } from '@/config/site'
 import type { Recipe } from '@/types/recipe'
 import { formatMinutes } from '@/utils/format'
@@ -19,6 +20,7 @@ const emit = defineEmits<{
   roll: []
   accept: []
   favorite: [id: string]
+  zoom: [recipe: Recipe]
 }>()
 
 /** 抽中结果变化时用 key 触发一次入场动画。 */
@@ -43,6 +45,7 @@ const sourceUrl = computed(() => {
 })
 
 const showFacts = computed(() => props.recipe !== null && !props.rolling)
+const hasImage = computed(() => props.recipe !== null && props.recipe.image !== null)
 const hint = computed(() => {
   if (props.rolling) return '正在翻菜谱，别眨眼…'
   if (props.recipe) return '今天就吃'
@@ -71,10 +74,18 @@ const hint = computed(() => {
         <p class="dial__pool">候选 <b>{{ poolSize }}</b> 道</p>
       </div>
 
-      <figure class="stage__media" :class="{ 'is-empty': !recipe }">
+      <button
+        class="stage__media"
+        :class="{ 'is-empty': !recipe }"
+        type="button"
+        :disabled="!hasImage"
+        :aria-label="hasImage ? `放大查看 ${recipe?.name}` : '这道菜还没有实拍图'"
+        @click="recipe && emit('zoom', recipe)"
+      >
         <DishThumb v-if="recipe" :recipe="recipe" eager />
         <span v-else class="stage__media-placeholder" aria-hidden="true">?</span>
-      </figure>
+        <DishZoomBadge v-if="hasImage" />
+      </button>
 
       <div class="stage__info">
         <p class="stage__hint">{{ hint }}</p>
@@ -168,7 +179,8 @@ const hint = computed(() => {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 26px 34px;
+  /* 转盘（开饭按钮）与右侧预览图之间始终留出 36px 呼吸位，换行后行距 26px。 */
+  gap: 26px 36px;
 }
 
 .stage__dial {
@@ -177,6 +189,8 @@ const hint = computed(() => {
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  /* 桌面端把「开饭」按钮摆到这一行的右侧（DOM 顺序保持按钮在前，方便键盘先够到主操作）。 */
+  order: 2;
 }
 
 .dial {
@@ -274,12 +288,23 @@ const hint = computed(() => {
 
 .stage__media {
   position: relative;
-  flex: 0 0 200px;
-  height: 150px;
+  flex: 0 0 240px;
+  aspect-ratio: var(--dish-media-ratio);
   margin: 0;
+  padding: 0;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 16px;
+}
+
+.stage__media:hover:not(:disabled) :deep(.dish-zoom),
+.stage__media:focus-visible :deep(.dish-zoom) {
+  background: rgba(10, 8, 14, 0.88);
+  transform: scale(1.1);
+}
+
+.stage__media:disabled {
+  cursor: default;
 }
 
 .stage__media.is-empty {
@@ -301,7 +326,8 @@ const hint = computed(() => {
 }
 
 .stage__info {
-  flex: 1 1 320px;
+  /* 基准宽度压到 280px，配合变大的预览图仍能在 900px 之前保持单行。 */
+  flex: 1 1 280px;
   min-width: 0;
 }
 
@@ -476,23 +502,30 @@ const hint = computed(() => {
 
 /* ---------- 响应式 ---------- */
 
-@media (max-width: 780px) {
+@media (max-width: 900px) {
   .stage {
     padding: 26px 20px 24px;
   }
 
   .stage__top {
-    justify-content: center;
+    /* 窄屏改成单列堆叠：转盘 → 预览图 → 信息，顺序固定且块间留 22px。 */
+    display: grid;
+    justify-items: center;
+    gap: 22px;
     text-align: center;
   }
 
+  .stage__dial {
+    order: 0;
+  }
+
+  /* 换行成上下排时不再拉满整行：保持 4:3 的完整预览，宽度收敛到 420px。 */
   .stage__media {
-    flex: 1 1 100%;
-    height: 168px;
+    width: min(100%, 420px);
   }
 
   .stage__info {
-    flex: 1 1 100%;
+    width: 100%;
   }
 
   .stage__meta,

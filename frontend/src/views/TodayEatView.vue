@@ -4,13 +4,16 @@ import { useRouter } from 'vue-router'
 
 import DishStage from '@/components/DishStage.vue'
 import FilterBar from '@/components/FilterBar.vue'
+import ImageLightbox from '@/components/ImageLightbox.vue'
 import SuggestionsList from '@/components/SuggestionsList.vue'
 import { SITE } from '@/config/site'
 import { usePickerStore } from '@/stores/picker'
+import type { Recipe } from '@/types/recipe'
 
 const store = usePickerStore()
 const router = useRouter()
 const toast = ref('')
+const zoomed = ref<Recipe | null>(null)
 let toastTimer: ReturnType<typeof setTimeout> | undefined
 
 const stats = computed(() => [
@@ -97,6 +100,7 @@ onBeforeUnmount(() => {
     @roll="store.roll()"
     @accept="accept"
     @favorite="favorite"
+    @zoom="zoomed = $event"
   />
 
   <p class="sr-only" aria-live="polite">
@@ -112,8 +116,11 @@ onBeforeUnmount(() => {
     v-if="store.suggestions.length > 0"
     :items="store.suggestions"
     @select="store.show($event)"
+    @zoom="zoomed = $event"
     @shuffle="store.shuffleSuggestions()"
   />
+
+  <ImageLightbox :recipe="zoomed" @close="zoomed = null" />
 
   <Transition name="toast">
     <p v-if="toast" class="toast" role="status">{{ toast }}</p>

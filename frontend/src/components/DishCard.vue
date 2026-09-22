@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 import DishThumb from '@/components/DishThumb.vue'
+import DishZoomBadge from '@/components/DishZoomBadge.vue'
 import type { Recipe } from '@/types/recipe'
 import { formatMinutes } from '@/utils/format'
 
@@ -17,18 +18,32 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   select: [recipe: Recipe]
+  zoom: [recipe: Recipe]
   toggleFavorite: [recipe: Recipe]
 }>()
 
 const minutes = computed(() => formatMinutes(props.recipe.estMinutes))
+
+/** 有实拍图时点图片是放大预览；没有图的占位块退化成「选中这道菜」。 */
+function onMediaClick(): void {
+  if (props.recipe.image) emit('zoom', props.recipe)
+  else emit('select', props.recipe)
+}
 </script>
 
 <template>
   <article class="dish-card" :class="`dish-card--${size}`">
+    <button
+      class="dish-card__media"
+      type="button"
+      :aria-label="recipe.image ? `放大查看 ${recipe.name}` : `选中 ${recipe.name}`"
+      @click="onMediaClick"
+    >
+      <DishThumb :recipe="recipe" />
+      <DishZoomBadge v-if="recipe.image" />
+    </button>
+
     <button class="dish-card__main" type="button" @click="emit('select', recipe)">
-      <span class="dish-card__media">
-        <DishThumb :recipe="recipe" />
-      </span>
       <span class="dish-card__body">
         <strong>{{ recipe.name }}</strong>
         <span class="dish-card__meta">
@@ -80,21 +95,22 @@ const minutes = computed(() => formatMinutes(props.recipe.estMinutes))
 .dish-card__main {
   display: block;
   width: 100%;
-  height: 100%;
   text-align: left;
 }
 
+/* 图片区自己就是一个按钮：点图看大图，点文字区才是选中。 */
 .dish-card__media {
+  position: relative;
   display: block;
+  width: 100%;
   overflow: hidden;
+  aspect-ratio: var(--dish-media-ratio);
 }
 
-.dish-card--md .dish-card__media {
-  height: 132px;
-}
-
-.dish-card--sm .dish-card__media {
-  height: 104px;
+.dish-card__media:hover :deep(.dish-zoom),
+.dish-card__media:focus-visible :deep(.dish-zoom) {
+  background: rgba(10, 8, 14, 0.88);
+  transform: scale(1.08);
 }
 
 .dish-card__body {

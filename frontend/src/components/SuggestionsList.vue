@@ -3,7 +3,7 @@ import DishCard from '@/components/DishCard.vue'
 import type { Recipe } from '@/types/recipe'
 
 defineProps<{ items: Recipe[] }>()
-const emit = defineEmits<{ select: [recipe: Recipe]; shuffle: [] }>()
+const emit = defineEmits<{ select: [recipe: Recipe]; zoom: [recipe: Recipe]; shuffle: [] }>()
 </script>
 
 <template>
@@ -20,7 +20,12 @@ const emit = defineEmits<{ select: [recipe: Recipe]; shuffle: [] }>()
         :key="recipe.id"
         :style="{ animationDelay: `${index * 70}ms` }"
       >
-        <DishCard :recipe="recipe" size="sm" @select="emit('select', $event)" />
+        <DishCard
+          :recipe="recipe"
+          size="sm"
+          @select="emit('select', $event)"
+          @zoom="emit('zoom', $event)"
+        />
       </li>
     </ul>
   </section>
