@@ -155,3 +155,23 @@ pnpm test
 以下项当前按通用方案默认约定，如与团队实际选型不同请就地修改本节之外的对应条款：
 持久化框架（JPA 与 MyBatis-Plus 二选一）、包名前缀、UI 组件库、鉴权方案（JWT / Session）、
 部署方式（Docker / K8s）、分支模型与发布流程。
+
+## 12. 数据源与静态资源流程
+
+菜谱数据来自上游开源仓库 [Gar-b-age/CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC)，
+整条链路已经脚本化，禁止手工编辑生成物：
+
+```
+上游仓库 → 缓存克隆 _cooklikehoc/ → data-source/CookLikeHOC/ → frontend/src/data/recipes.json + frontend/public/images/
+             └────────────── scripts/sync-cooklikehoc.mjs ──────────────┘   └─ frontend/scripts/build-recipes.mjs ─┘
+```
+
+- 同步上游（拉取 + 对齐数据源 + 重建静态资源）：在 `frontend/` 下执行 `pnpm data:sync`
+  （等价于仓库根的 `node scripts/sync-cooklikehoc.mjs`）；只检查上游是否有新数据用
+  `pnpm data:check`（有新数据退出码 2）。
+- 分类清单是全链路唯一的真源，位于 `scripts/recipe-categories.mjs`，
+  上游同步脚本与 `frontend/scripts/build-recipes.mjs` 共用；新增分类只改这一处。
+- `data-source/CookLikeHOC/`、`frontend/src/data/`、`frontend/public/images/` 均为生成物：
+  其中 `frontend` 下的两处不入库（见 `.gitignore`），`data-source/` 入库以便离线构建，
+  但只能由同步脚本改写。上游 commit 记录在 `data-source/CookLikeHOC/.upstream.json`。
+- `scripts/` 下脚本的单测：`pnpm test:scripts`（Node 内置 test runner，无需额外依赖）。

@@ -5,7 +5,7 @@ Vue 3 + TypeScript + Vite 实现的「今天吃什么」决策页：从 290 道�
 以及按分类总览全部菜品。
 
 菜谱数据来自开源项目 [Gar-b-age/CookLikeHOC](https://github.com/Gar-b-age/CookLikeHOC)，
-已随仓库放在 `../data-source/CookLikeHOC`。
+已随仓库放在 `../data-source/CookLikeHOC`（由仓库根的 `scripts/sync-cooklikehoc.mjs` 同步）。
 
 ## 快速开始
 
@@ -17,10 +17,13 @@ pnpm dev          # 会先跑一次数据生成，再启动 dev server
 其他命令：
 
 ```bash
+pnpm data:sync    # 拉取上游 CookLikeHOC → 对齐 ../data-source/CookLikeHOC → 重新生成静态资源
+pnpm data:check   # 只检查上游是否有新数据（有新数据退出码 2）
 pnpm data:build   # 仅重新生成 src/data/recipes.json 与 public/images/
 pnpm typecheck    # vue-tsc 类型检查
 pnpm lint         # ESLint
 pnpm test         # Vitest（随机/筛选等纯逻辑）
+pnpm test:scripts # 上游同步脚本的单测（node --test）
 pnpm build        # 数据生成 + 类型检查 + 产物构建
 pnpm preview      # 预览 dist
 ```
@@ -41,6 +44,11 @@ public/images/*         →   <img src>
 ```bash
 RECIPE_SOURCE_DIR=/path/to/CookLikeHOC pnpm data:build
 ```
+
+上游仓库更新后，执行一次 `pnpm data:sync`（在这里，或在仓库根目录用 `node scripts/sync-cooklikehoc.mjs`）：
+拉取上游 → 对齐 `data-source/CookLikeHOC` → 记录上游 commit → 再回来跑 `pnpm data:build`。
+完整的选项与流程说明见 [`../data-source/README.md`](../data-source/README.md)；
+分类清单由 `../scripts/recipe-categories.mjs` 提供，前端构建与上游同步脚本共用同一份定义。
 
 ## 目录说明
 

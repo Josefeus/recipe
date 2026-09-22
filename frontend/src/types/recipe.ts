@@ -26,6 +26,10 @@ export interface RecipeCategory {
 export interface RecipeSource {
   repo: string
   note: string
+  /** 数据源对应的上游 commit；由 scripts/sync-cooklikehoc.mjs 同步时写入，手工准备的数据源可能没有。 */
+  commit?: string
+  /** 上游分支或标签名。 */
+  ref?: string
 }
 
 export interface RecipeDataset {

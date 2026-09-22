@@ -4,7 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "data:sync": "node ../scripts/sync-cooklikehoc.mjs",
+    "data:check": "node ../scripts/sync-cooklikehoc.mjs --check",
     "data:build": "node scripts/build-recipes.mjs",
+    "test:scripts": "node --test \"../scripts/**/*.test.mjs\"",
     "dev": "node scripts/build-recipes.mjs && vite",
     "build": "node scripts/build-recipes.mjs && vue-tsc --noEmit && vite build",
     "preview": "vite preview",

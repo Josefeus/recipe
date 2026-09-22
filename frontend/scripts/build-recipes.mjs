@@ -4,12 +4,15 @@
  *   - public/images/*         被引用的菜品实拍图
  *
  * 用法：pnpm data:build
- * 可用 RECIPE_SOURCE_DIR 覆盖数据源目录。
+ * 可用 RECIPE_SOURCE_DIR 覆盖数据源目录；菜谱分类定义在仓库根的
+ * scripts/recipe-categories.mjs，与上游同步脚本共用。
  */
 import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { CATEGORIES } from '../../scripts/recipe-categories.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const projectRoot = path.resolve(__dirname, '..')
@@ -18,24 +21,6 @@ const sourceRoot = path.resolve(
 )
 const outputJson = path.join(projectRoot, 'src', 'data', 'recipes.json')
 const outputImages = path.join(projectRoot, 'public', 'images')
-
-/** 分类顺序即前端 tab 顺序；配料/酱料属于半成品，不作为「今天吃什么」的候选。 */
-const CATEGORIES = [
-  { key: '炒菜', tag: '快炒', emoji: '🥘' },
-  { key: '炖菜', tag: '慢炖', emoji: '🍲' },
-  { key: '蒸菜', tag: '清蒸', emoji: '♨️' },
-  { key: '砂锅菜', tag: '砂锅', emoji: '🍯' },
-  { key: '煮锅', tag: '煮锅', emoji: '🥣' },
-  { key: '汤', tag: '汤羹', emoji: '🥣' },
-  { key: '烫菜', tag: '烫菜', emoji: '🥬' },
-  { key: '凉拌', tag: '凉菜', emoji: '🥗' },
-  { key: '卤菜', tag: '卤味', emoji: '🍗' },
-  { key: '炸品', tag: '炸物', emoji: '🍤' },
-  { key: '烤类', tag: '烤制', emoji: '🔥' },
-  { key: '早餐', tag: '早餐', emoji: '🥟' },
-  { key: '主食', tag: '主食', emoji: '🍚' },
-  { key: '饮品', tag: '饮品', emoji: '🥤' },
-]
 
 const INGREDIENT_HEADING = /^(配料|原料|食材|主要原料|配方|品类)/
 const STEP_HEADING = /(步骤|制作|工艺|流程|装配|炒制|烧制|烫制|冲调|现磨|出品|复热)/
@@ -93,6 +78,18 @@ function parseNutrition(lines) {
     rows.push({ label, value })
   }
   return rows
+}
+
+/** 记录上游版本的 .upstream.json，由 scripts/sync-cooklikehoc.mjs 写入。 */
+function readUpstreamMeta() {
+  const file = path.join(sourceRoot, '.upstream.json')
+  if (!fs.existsSync(file)) return null
+  try {
+    const meta = JSON.parse(fs.readFileSync(file, 'utf8'))
+    return { commit: meta.commit ?? null, ref: meta.ref ?? null }
+  } catch {
+    return null
+  }
 }
 
 /** 步骤里出现的分钟/小时求和，作为「大概要花多久」的粗略估算。 */
@@ -235,11 +232,13 @@ function main() {
     warnings.push(`清理过期图片：${existing}`)
   }
 
+  const upstreamMeta = readUpstreamMeta()
   const payload = {
     generatedAt: new Date().toISOString(),
     source: {
       repo: 'https://github.com/Gar-b-age/CookLikeHOC',
       note: '菜谱内容整理自《老乡鸡菜品溯源报告》，版权归原作者所有，此处仅作演示数据。',
+      ...(upstreamMeta ?? {}),
     },
     categories,
     recipes,
