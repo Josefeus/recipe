@@ -1,5 +1,6 @@
 node_modules/
 dist/
+# Legacy：图片副本已由 data-source/CookLikeHOC/images 取代（见 scripts/recipe-images.ts）。
 public/images/
 src/data/
 *.local

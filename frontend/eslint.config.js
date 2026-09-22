@@ -21,7 +21,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['**/*.mjs', '**/*.config.ts', '**/mock/**/*.ts'],
+    files: ['**/*.mjs', '**/*.config.ts', '**/mock/**/*.ts', '**/scripts/**/*.ts'],
     languageOptions: { globals: { process: 'readonly', console: 'readonly' } },
   },
 )

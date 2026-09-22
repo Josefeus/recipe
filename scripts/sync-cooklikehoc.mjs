@@ -8,10 +8,10 @@
  *      (add / update / delete, so the mirror stays exactly in sync)
  *   3. record the upstream commit in `data-source/CookLikeHOC/.upstream.json`
  *   4. run `pnpm data:build` in `frontend/` to regenerate `src/data/recipes.json`
- *      and `public/images/`
+ *      (菜品图片不再复制到前端，由 Vite 插件直接从数据源提供)
  *
  * Usage:
- *   node scripts/sync-cooklikehoc.mjs               # 同步 + 重新生成静态资源
+ *   node scripts/sync-cooklikehoc.mjs               # 同步 + 重新生成前端数据
  *   node scripts/sync-cooklikehoc.mjs --check       # 只检查上游是否更新（有新数据退出码 2）
  *   node scripts/sync-cooklikehoc.mjs --dry-run     # 只打印将要发生的改动
  *   node scripts/sync-cooklikehoc.mjs --ref v1.2.0  # 固定到某个分支/标签
@@ -36,7 +36,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(__dirname, '..')
 const frontendDir = path.join(repoRoot, 'frontend')
 const recipesJson = path.join(frontendDir, 'src', 'data', 'recipes.json')
-const imagesDir = path.join(frontendDir, 'public', 'images')
 
 const DEFAULT_REPO = 'https://github.com/Gar-b-age/CookLikeHOC.git'
 const UPSTREAM_META_FILE = '.upstream.json'
@@ -321,10 +320,14 @@ function runBuild() {
 function reportBuildResult() {
   const dataset = readJson(recipesJson)
   if (!dataset) return
-  const images = fs.existsSync(imagesDir) ? fs.readdirSync(imagesDir).length : 0
+  const images = new Set(
+    (dataset.recipes ?? [])
+      .map((recipe) => recipe?.image)
+      .filter((image) => typeof image === 'string'),
+  ).size
   console.log(
     `\n产物：${dataset.recipes?.length ?? 0} 道菜，${dataset.categories?.length ?? 0} 个分类，` +
-      `${images} 张图片（frontend/src/data/recipes.json、frontend/public/images/）`,
+      `${images} 张引用图片（frontend/src/data/recipes.json；图片由 data-source/CookLikeHOC/images 直接提供）`,
   )
 }
 

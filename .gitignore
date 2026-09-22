@@ -9,6 +9,7 @@ target/
 # --- Generated recipe data ---
 # Rebuilt by `pnpm data:build` from data-source/CookLikeHOC.
 frontend/src/data/
+# Legacy: 早期构建会把图片复制到这里，现在图片由 data-source/CookLikeHOC/images 直接提供。
 frontend/public/images/
 
 # --- Upstream reference clone ---

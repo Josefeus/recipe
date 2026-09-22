@@ -17,9 +17,9 @@ pnpm dev          # 会先跑一次数据生成，再启动 dev server
 其他命令：
 
 ```bash
-pnpm data:sync    # 拉取上游 CookLikeHOC → 对齐 ../data-source/CookLikeHOC → 重新生成静态资源
+pnpm data:sync    # 拉取上游 CookLikeHOC → 对齐 ../data-source/CookLikeHOC → 重新生成前端数据
 pnpm data:check   # 只检查上游是否有新数据（有新数据退出码 2）
-pnpm data:build   # 仅重新生成 src/data/recipes.json 与 public/images/
+pnpm data:build   # 仅重新生成 src/data/recipes.json
 pnpm typecheck    # vue-tsc 类型检查
 pnpm lint         # ESLint
 pnpm test         # Vitest（随机/筛选等纯逻辑）
@@ -34,11 +34,13 @@ pnpm preview      # 预览 dist
 data-source/CookLikeHOC/<分类>/*.md
         │  scripts/build-recipes.mjs（解析 配料/原料 + 步骤 + 营养表格）
         ▼
-src/data/recipes.json   →   src/api/recipes.ts
-public/images/*         →   <img src>
+src/data/recipes.json              →   src/api/recipes.ts
+data-source/CookLikeHOC/images/*   →   <img src>（scripts/recipe-images.ts 插件提供）
 ```
 
-`recipes.json` 与 `public/images/` 都是生成物，不入库；`pnpm dev` / `pnpm build` 会自动重建。
+`recipes.json` 是生成物，不入库，`pnpm dev` / `pnpm build` 会自动重建。菜品图片只在
+`data-source/CookLikeHOC/images/` 保留一份，前端不再有 `public/images/` 副本：开发时插件
+直接从数据源读取 `/images/*`，构建时把被引用的图片复制进 `dist/images/`。
 数据源换了位置时用环境变量指定：
 
 ```bash
@@ -65,6 +67,7 @@ RECIPE_SOURCE_DIR=/path/to/CookLikeHOC pnpm data:build
 | `src/lib/pick.ts` | 纯函数：筛选、随机抽取、备选、转盘序列 |
 | `src/api/recipes.ts` | 菜谱接口 |
 | `mock/recipes-api.ts` | Vite 中间件假后端，按 `{code,message,data}` 约定返回 |
+| `scripts/recipe-images.ts` | Vite 插件：开发时提供 `/images/*`，构建时把被引用的图片写进 `dist/images/` |
 
 ## 路由
 

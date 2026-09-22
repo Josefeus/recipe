@@ -12,7 +12,7 @@
 
 ## 同步上游更新
 
-一条命令完成「拉取上游 → 更新本目录 → 重新生成前端静态资源」：
+一条命令完成「拉取上游 → 更新本目录 → 重新生成前端数据资源」：
 
 ```bash
 cd frontend && pnpm data:sync     # = node ../scripts/sync-cooklikehoc.mjs
@@ -24,7 +24,11 @@ cd frontend && pnpm data:sync     # = node ../scripts/sync-cooklikehoc.mjs
 2. 按 `scripts/recipe-categories.mjs` 里的分类逐目录对齐 `CookLikeHOC/`，
    新增 / 更新 / 删除文件，并清理随之变空的目录；
 3. 把上游 commit 写入 `CookLikeHOC/.upstream.json`（commit 未变时不重写）；
-4. 在 `frontend/` 执行 `pnpm data:build`，重建 `src/data/recipes.json` 与 `public/images/`。
+4. 在 `frontend/` 执行 `pnpm data:build`，重建 `src/data/recipes.json`。
+
+图片不会被复制到前端：`CookLikeHOC/images/` 是图片的唯一副本，开发与构建时由
+`frontend/scripts/recipe-images.ts` 插件直接提供 `/images/*`，构建产物 `dist/images/`
+只包含 `recipes.json` 引用到的图片。
 
 常用选项：
 

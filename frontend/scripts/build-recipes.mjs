@@ -1,7 +1,9 @@
 /**
  * 从 data-source/CookLikeHOC 抽取菜谱数据，产出：
  *   - src/data/recipes.json   结构化菜谱数据（前端打包内使用）
- *   - public/images/*         被引用的菜品实拍图
+ *
+ * 菜品实拍图不再复制到前端：图片只在 data-source/CookLikeHOC/images 保留一份，
+ * 开发与构建时由 vite.config.ts 里的 recipeImages 插件按需提供（见 scripts/recipe-images.ts）。
  *
  * 用法：pnpm data:build
  * 可用 RECIPE_SOURCE_DIR 覆盖数据源目录；菜谱分类定义在仓库根的
@@ -20,7 +22,6 @@ const sourceRoot = path.resolve(
   process.env.RECIPE_SOURCE_DIR ?? path.join(projectRoot, '..', 'data-source', 'CookLikeHOC'),
 )
 const outputJson = path.join(projectRoot, 'src', 'data', 'recipes.json')
-const outputImages = path.join(projectRoot, 'public', 'images')
 
 const INGREDIENT_HEADING = /^(配料|原料|食材|主要原料|配方|品类)/
 const STEP_HEADING = /(步骤|制作|工艺|流程|装配|炒制|烧制|烫制|冲调|现磨|出品|复热)/
@@ -134,8 +135,8 @@ function withRetry(action, attempts = 5) {
 
 function main() {
   if (!fs.existsSync(sourceRoot)) {
-    if (fs.existsSync(outputJson) && fs.existsSync(outputImages)) {
-      console.warn(`跳过数据生成：找不到数据源 ${sourceRoot}，沿用已有的 recipes.json 与图片。`)
+    if (fs.existsSync(outputJson)) {
+      console.warn(`跳过数据生成：找不到数据源 ${sourceRoot}，沿用已有的 recipes.json。`)
       return
     }
     console.error(`找不到数据源目录：${sourceRoot}`)
@@ -150,8 +151,6 @@ function main() {
       if (/\.(png|jpe?g|webp|gif)$/i.test(file)) imageIndex.set(file, file)
     }
   }
-
-  fs.mkdirSync(outputImages, { recursive: true })
 
   const recipes = []
   const categories = []
@@ -217,21 +216,6 @@ function main() {
     categories.push({ key: category.key, tag: category.tag, emoji: category.emoji, count })
   }
 
-  for (const image of usedImages) {
-    const from = path.join(imagesDir, image)
-    const to = path.join(outputImages, image)
-    // 已是同一张图就跳过，重复构建时省时间也少踩 Windows 的文件占用。
-    if (fs.existsSync(to) && fs.statSync(to).size === fs.statSync(from).size) continue
-    withRetry(() => fs.copyFileSync(from, to))
-  }
-
-  // 清掉数据源里已经不存在（或不再被引用）的旧图，避免上次构建的残留混进产物。
-  for (const existing of fs.readdirSync(outputImages)) {
-    if (usedImages.has(existing)) continue
-    withRetry(() => fs.unlinkSync(path.join(outputImages, existing)))
-    warnings.push(`清理过期图片：${existing}`)
-  }
-
   const upstreamMeta = readUpstreamMeta()
   const payload = {
     generatedAt: new Date().toISOString(),
@@ -247,7 +231,7 @@ function main() {
   fs.mkdirSync(path.dirname(outputJson), { recursive: true })
   withRetry(() => fs.writeFileSync(outputJson, `${JSON.stringify(payload, null, 2)}\n`, 'utf8'))
 
-  console.log(`菜谱 ${recipes.length} 条，分类 ${categories.length} 个，图片 ${usedImages.size} 张`)
+  console.log(`菜谱 ${recipes.length} 条，分类 ${categories.length} 个，引用图片 ${usedImages.size} 张`)
   console.log(`输出：${path.relative(projectRoot, outputJson)}`)
   if (skipped.length) {
     console.log(`\n跳过 ${skipped.length} 条非菜品条目：${skipped.join('、')}`)
