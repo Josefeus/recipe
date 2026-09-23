@@ -1,0 +1,22 @@
+# Local development dependencies for the recipe backend.
+# Usage: docker compose up -d
+services:
+  postgres:
+    image: postgres:16
+    container_name: recipe-postgres
+    environment:
+      POSTGRES_DB: recipe
+      POSTGRES_USER: recipe
+      POSTGRES_PASSWORD: recipe
+    ports:
+      - "5432:5432"
+    volumes:
+      - recipe-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U recipe -d recipe"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  recipe-postgres-data:
