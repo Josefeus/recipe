@@ -51,14 +51,36 @@
 
 ## 4. 后端规范（Java / Spring Boot）
 
-### 4.1 分层与职责
+### 4.1 开发方法论（SDD + DDD）
+
+后端功能开发一律遵循「规格先行 + 领域驱动」：
+
+**SDD（规格驱动开发）**
+
+- 动手写代码前，先在 `docs/specs/<feature>/` 下创建规格三件套，经确认后再进入实现：
+  - `requirements.md`：背景与目标、用户故事 + EARS 验收标准（WHEN / IF … THE SYSTEM SHALL …）、范围（In/Out of Scope）、非功能需求；
+  - `design.md`：架构与数据链路、技术选型及理由、数据模型、API 契约、同步/流程设计、测试策略；
+  - `tasks.md`：可勾选的分阶段任务清单，每项含验证方式与依赖关系。
+- 实现过程中如与规格出现偏差，先更新规格再改代码；规格变更与对应代码变更在同一 PR 中提交。
+- 已有范例：`docs/specs/backend-recipes/`（后端菜谱数据迁移）。
+
+**DDD（领域驱动设计）**
+
+- 以业务域为中心组织代码：`module/<domain>/` 即限界上下文，域内按 controller / service / repository / entity / dto / mapper 分层；
+- 先识别聚合根与聚合边界，再写代码：每个聚合对应一个 Repository，聚合内部对象只能通过聚合根访问；
+- 命名使用团队通用语言（业务术语），Entity / DTO / 方法名与业务概念一一对应，禁止纯技术化命名；
+- 业务规则写在领域层（Service / 领域对象），Controller 不承载业务逻辑（见 4.2）；
+- 跨域协作只能通过对方模块暴露的 Service 接口或领域事件，禁止跨模块直接访问他人 Repository（同第 10 节禁令）；
+- 数据库表结构服从领域模型（聚合一致性边界即事务边界），禁止先建表再倒推模型。
+
+### 4.2 分层与职责
 
 - `Controller`：只做参数校验、调用 `Service`、组装响应，禁止写业务逻辑与直接操作 `Repository`。
 - `Service`：业务逻辑与事务边界，返回 DTO 或领域对象，不返回持久化 `Entity`。
 - `Repository`：只负责数据访问，禁止在其中写业务分支。
 - `Entity` 不直接作为接口出入参，统一使用 `dto` 包下的请求/响应对象。
 
-### 4.2 编码要求
+### 4.3 编码要求
 
 - 使用构造器注入（推荐 `@RequiredArgsConstructor`），禁止字段注入 `@Autowired`。
 - 入参校验使用 `@Valid` + Jakarta Validation 注解，校验信息明确可读。
@@ -71,7 +93,7 @@
 - SQL / JPQL 一律参数绑定，禁止字符串拼接用户输入。
 - 接口新增或变更时同步更新 springdoc 注解，保持 Swagger 文档可用。
 
-### 4.3 常用命令（在 `backend/` 下执行）
+### 4.4 常用命令（在 `backend/` 下执行）
 
 ```bash
 mvn -q clean verify          # 编译 + 全部测试，提交前必须通过

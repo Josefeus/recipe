@@ -1,0 +1,11 @@
+# Local development defaults. Never commit real credentials here;
+# production values must come from environment variables.
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recipe
+    username: recipe
+    password: recipe
+
+logging:
+  level:
+    com.example.app: DEBUG
