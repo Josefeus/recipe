@@ -10,8 +10,9 @@ spring:
     password: ${DB_PASSWORD:recipe}
   jackson:
     time-zone: UTC
-    serialization:
-      write-dates-as-timestamps: false
+    datatype:
+      datetime:
+        write-dates-as-timestamps: false
   jpa:
     open-in-view: false
     hibernate:
