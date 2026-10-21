@@ -33,11 +33,11 @@ const store = usePickerStore()
 
 .footer a {
   color: var(--text-muted);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid var(--border-strong);
 }
 
 .footer a:hover {
-  color: var(--amber);
+  color: var(--chili);
 }
 
 .footer__meta {

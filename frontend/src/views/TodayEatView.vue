@@ -157,10 +157,7 @@ onBeforeUnmount(() => {
 }
 
 .hero__mark {
-  background: var(--accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--chili);
 }
 
 .hero__sub {
@@ -192,13 +189,13 @@ onBeforeUnmount(() => {
   left: 50%;
   z-index: 60;
   padding: 12px 22px;
-  border: 1px solid rgba(255, 179, 64, 0.38);
+  border: 1px solid rgba(200, 68, 44, 0.35);
   border-radius: 999px;
-  background: rgba(24, 19, 30, 0.92);
-  backdrop-filter: blur(14px);
+  background: var(--surface);
   font-size: 13.5px;
+  color: var(--text);
   transform: translateX(-50%);
-  box-shadow: 0 20px 50px -24px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 20px 44px -22px rgba(63, 48, 32, 0.5);
 }
 
 .toast-enter-active,

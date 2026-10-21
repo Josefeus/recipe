@@ -65,7 +65,6 @@ const hint = computed(() => {
           @click="emit('roll')"
         >
           <span class="dial__ring" aria-hidden="true"></span>
-          <span class="dial__glow" aria-hidden="true"></span>
           <span class="dial__core">
             <strong>{{ rolling ? '···' : '开饭' }}</strong>
             <small>{{ rolling ? '翻菜谱' : '点我决定' }}</small>
@@ -93,7 +92,7 @@ const hint = computed(() => {
         <h2
           :key="revealKey"
           class="stage__name"
-          :class="{ 'is-rolling': rolling, 'is-idle': !rolling && !recipe, 'gradient-text': !rolling && !!recipe }"
+          :class="{ 'is-rolling': rolling, 'is-idle': !rolling && !recipe }"
         >
           {{ rolling ? name : (recipe?.name ?? '还没想好') }}
         </h2>
@@ -209,24 +208,15 @@ const hint = computed(() => {
   border-radius: 50%;
   background: conic-gradient(
     from 0deg,
-    rgba(255, 255, 255, 0.06) 0 45%,
+    rgba(63, 48, 32, 0.1) 0 45%,
     var(--amber) 68%,
     var(--chili) 86%,
-    rgba(255, 255, 255, 0.06) 100%
+    rgba(63, 48, 32, 0.1) 100%
   );
   -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 8px));
   mask: radial-gradient(farthest-side, transparent calc(100% - 9px), #000 calc(100% - 8px));
   animation: spin 4.2s linear infinite;
   transition: filter 0.3s ease;
-}
-
-.dial__glow {
-  position: absolute;
-  inset: 16px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 179, 64, 0.5), transparent 68%);
-  filter: blur(16px);
-  animation: glow-pulse 3.6s ease-in-out infinite;
 }
 
 .dial__core {
@@ -238,12 +228,9 @@ const hint = computed(() => {
   height: 122px;
   border: 1px solid var(--border-strong);
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.1), transparent 60%),
-    linear-gradient(160deg, #1b1624, #0d0b12);
+  background: var(--surface);
   text-align: center;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .dial__core strong {
@@ -268,7 +255,7 @@ const hint = computed(() => {
 
 .dial.is-rolling .dial__ring {
   animation: spin 0.7s linear infinite;
-  filter: brightness(1.35);
+  filter: saturate(1.2);
 }
 
 .dial:disabled {
@@ -282,7 +269,7 @@ const hint = computed(() => {
 }
 
 .dial__pool b {
-  color: var(--amber);
+  color: var(--chili);
   font-variant-numeric: tabular-nums;
 }
 
@@ -311,18 +298,14 @@ const hint = computed(() => {
   display: grid;
   place-items: center;
   background:
-    repeating-linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.035) 0 12px,
-      transparent 12px 24px
-    ),
-    rgba(255, 255, 255, 0.02);
+    radial-gradient(120% 120% at 50% 0%, rgba(63, 48, 32, 0.04), transparent 62%),
+    var(--surface-strong);
 }
 
 .stage__media-placeholder {
   font-size: 44px;
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.14);
+  color: rgba(63, 48, 32, 0.18);
 }
 
 .stage__info {
@@ -352,6 +335,11 @@ const hint = computed(() => {
   filter: blur(0.7px);
   animation: none;
   opacity: 0.85;
+}
+
+/* 抽中结果用辣椒红标出，保持「这道就是答案」的指向。 */
+.stage__name:not(.is-rolling):not(.is-idle) {
+  color: var(--chili);
 }
 
 .stage__name.is-idle {
@@ -429,7 +417,7 @@ const hint = computed(() => {
   padding: 6px 13px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-strong);
   font-size: 13px;
 }
 
@@ -443,7 +431,7 @@ const hint = computed(() => {
   padding: 9px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--surface-strong);
 }
 
 .nutrition b {
@@ -475,8 +463,8 @@ const hint = computed(() => {
   width: 24px;
   height: 24px;
   border-radius: 8px;
-  background: rgba(255, 179, 64, 0.14);
-  color: var(--amber);
+  background: rgba(200, 68, 44, 0.1);
+  color: var(--chili);
   font-size: 12px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -485,7 +473,7 @@ const hint = computed(() => {
 .steps__text {
   font-size: 14px;
   line-height: 1.75;
-  color: rgba(247, 243, 239, 0.9);
+  color: var(--text);
 }
 
 .stage__source {
@@ -493,11 +481,11 @@ const hint = computed(() => {
   justify-self: end;
   font-size: 12.5px;
   color: var(--text-dim);
-  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+  border-bottom: 1px dashed var(--border-strong);
 }
 
 .stage__source:hover {
-  color: var(--amber);
+  color: var(--chili);
 }
 
 /* ---------- 响应式 ---------- */

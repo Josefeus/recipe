@@ -1,30 +1,31 @@
 :root {
-  --bg: #0a0910;
-  --bg-soft: #14111d;
-  --surface: rgba(255, 255, 255, 0.045);
-  --surface-strong: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.18);
+  --bg: #faf6ee;
+  --bg-soft: #f3ecdf;
+  --surface: #fffdf8;
+  --surface-strong: #f6efe2;
+  --border: #e7dcc8;
+  --border-strong: #d8c9ae;
 
-  --text: #f7f3ef;
-  --text-muted: #a79fab;
-  --text-dim: #6d6675;
+  --text: #2f2a24;
+  --text-muted: #6f675c;
+  --text-dim: #9a9083;
 
-  --chili: #ff5a3c;
-  --amber: #ffb340;
-  --herb: #3ed6a0;
-  --accent: linear-gradient(118deg, var(--chili), var(--amber));
+  --chili: #c8442c;
+  --amber: #b97d10;
+  --herb: #3e7d5c;
+  --accent: var(--chili);
 
-  --radius-lg: 26px;
-  --radius-md: 16px;
+  --radius-lg: 18px;
+  --radius-md: 14px;
   --radius-sm: 10px;
 
   /* 菜品实拍图的统一显示比例：数据源里的照片主体比例约 1.2~1.4，
      统一按 4:3 呈现，既不会把菜品裁掉，也不会留下大片空白。 */
   --dish-media-ratio: 4 / 3;
 
-  --shadow-card: 0 22px 60px -30px rgba(0, 0, 0, 0.95);
-  --shadow-pop: 0 30px 80px -34px rgba(255, 90, 60, 0.45);
+  --shadow-card: 0 1px 2px rgba(63, 48, 32, 0.06);
+  --shadow-lift: 0 14px 30px -18px rgba(63, 48, 32, 0.35);
+  --shadow-pop: 0 10px 24px -14px rgba(200, 68, 44, 0.5);
 
   --font-sans: 'PingFang SC', 'HarmonyOS Sans SC', 'Source Han Sans SC', 'Microsoft YaHei',
     'Segoe UI', system-ui, sans-serif;
@@ -89,9 +90,14 @@ img {
 }
 
 :focus-visible {
-  outline: 2px solid var(--amber);
+  outline: 2px solid var(--chili);
   outline-offset: 3px;
   border-radius: 6px;
+}
+
+::selection {
+  background: rgba(200, 68, 44, 0.18);
+  color: var(--text);
 }
 
 /* ---------- 布局 ---------- */
@@ -104,50 +110,6 @@ img {
   padding: 22px 0 72px;
 }
 
-/* ---------- 背景光晕 ---------- */
-
-.aurora {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  background:
-    radial-gradient(120% 90% at 50% -20%, rgba(255, 179, 64, 0.12), transparent 60%),
-    var(--bg);
-}
-
-.aurora__blob {
-  position: absolute;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  filter: blur(110px);
-  opacity: 0.42;
-  animation: drift 22s ease-in-out infinite alternate;
-}
-
-.aurora__blob--chili {
-  top: -180px;
-  left: -120px;
-  background: var(--chili);
-}
-
-.aurora__blob--amber {
-  top: -80px;
-  right: -160px;
-  background: var(--amber);
-  animation-delay: -7s;
-}
-
-.aurora__blob--herb {
-  bottom: -260px;
-  left: 40%;
-  background: var(--herb);
-  opacity: 0.26;
-  animation-delay: -13s;
-}
-
 /* ---------- 通用零件 ---------- */
 
 .card {
@@ -155,7 +117,6 @@ img {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  backdrop-filter: blur(18px);
 }
 
 .chip {
@@ -172,9 +133,9 @@ img {
 }
 
 .chip--accent {
-  border-color: rgba(255, 179, 64, 0.4);
-  background: rgba(255, 179, 64, 0.12);
-  color: var(--amber);
+  border-color: rgba(200, 68, 44, 0.35);
+  background: rgba(200, 68, 44, 0.08);
+  color: var(--chili);
 }
 
 .chip--warn {
@@ -190,7 +151,7 @@ img {
   padding: 11px 20px;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
-  background: var(--surface-strong);
+  background: var(--surface);
   font-size: 14px;
   font-weight: 600;
   transition:
@@ -202,8 +163,8 @@ img {
 
 .btn:hover {
   transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--text-dim);
+  background: var(--surface-strong);
 }
 
 .btn:active {
@@ -211,15 +172,15 @@ img {
 }
 
 .btn--primary {
-  border-color: transparent;
-  background: var(--accent);
-  color: #24120a;
+  border-color: var(--chili);
+  background: var(--chili);
+  color: #fff7ee;
   box-shadow: var(--shadow-pop);
 }
 
 .btn--primary:hover {
-  background: var(--accent);
-  box-shadow: 0 34px 90px -30px rgba(255, 90, 60, 0.6);
+  border-color: #b23a24;
+  background: #b23a24;
 }
 
 .btn:disabled {
@@ -246,11 +207,8 @@ img {
   color: var(--text-dim);
 }
 
-.gradient-text {
-  background: var(--accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+.accent-text {
+  color: var(--chili);
 }
 
 .sr-only {
@@ -269,7 +227,7 @@ img {
 .scroll-area {
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+  scrollbar-color: rgba(63, 48, 32, 0.28) transparent;
 }
 
 .scroll-area::-webkit-scrollbar {
@@ -277,23 +235,11 @@ img {
 }
 
 .scroll-area::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(63, 48, 32, 0.24);
   border-radius: 999px;
 }
 
 /* ---------- 动画 ---------- */
-
-@keyframes drift {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(60px, 40px, 0) scale(1.12);
-  }
-  100% {
-    transform: translate3d(-40px, 70px, 0) scale(0.96);
-  }
-}
 
 @keyframes pop-in {
   0% {
@@ -324,18 +270,6 @@ img {
 @keyframes spin {
   to {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes glow-pulse {
-  0%,
-  100% {
-    opacity: 0.55;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.9;
-    transform: scale(1.06);
   }
 }
 

@@ -136,14 +136,14 @@ function patch(next: Partial<RecipeFilters>): void {
   align-items: center;
   gap: 10px;
   padding: 0 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.28);
+  background: var(--surface);
   transition: border-color 0.18s ease;
 }
 
 .search:focus-within {
-  border-color: rgba(255, 179, 64, 0.55);
+  border-color: var(--chili);
 }
 
 .search svg {
@@ -210,9 +210,9 @@ function patch(next: Partial<RecipeFilters>): void {
 }
 
 .switch.is-on {
-  border-color: rgba(255, 179, 64, 0.5);
-  background: rgba(255, 179, 64, 0.14);
-  color: var(--amber);
+  border-color: rgba(200, 68, 44, 0.4);
+  background: rgba(200, 68, 44, 0.08);
+  color: var(--chili);
 }
 
 .switch--reset {
@@ -254,9 +254,9 @@ function patch(next: Partial<RecipeFilters>): void {
 }
 
 .cat.is-on {
-  border-color: transparent;
-  background: var(--accent);
-  color: #2a1309;
+  border-color: var(--chili);
+  background: var(--chili);
+  color: #fff7ee;
   font-weight: 700;
 }
 
@@ -278,7 +278,7 @@ function patch(next: Partial<RecipeFilters>): void {
 }
 
 .filters__count b {
-  color: var(--amber);
+  color: var(--chili);
   font-variant-numeric: tabular-nums;
 }
 
@@ -295,7 +295,33 @@ function patch(next: Partial<RecipeFilters>): void {
 }
 
 .filters__browse:hover {
-  border-color: rgba(255, 179, 64, 0.5);
-  color: var(--amber);
+  border-color: rgba(200, 68, 44, 0.5);
+  color: var(--chili);
+}
+
+/* 窄屏：14 个分类按行换行会占掉五六屏高度，改成单行横向滑动。 */
+@media (max-width: 720px) {
+  .cats {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: -22px;
+    padding-inline: 22px;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+  }
+
+  .cats::-webkit-scrollbar {
+    display: none;
+  }
+
+  .cats li {
+    flex: none;
+  }
+
+  .cat {
+    scroll-snap-align: start;
+  }
 }
 </style>

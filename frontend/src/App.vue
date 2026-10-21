@@ -18,12 +18,6 @@ function openPanel(tab: CollectionTab): void {
 </script>
 
 <template>
-  <div class="aurora" aria-hidden="true">
-    <span class="aurora__blob aurora__blob--chili"></span>
-    <span class="aurora__blob aurora__blob--amber"></span>
-    <span class="aurora__blob aurora__blob--herb"></span>
-  </div>
-
   <div class="shell">
     <AppHeader
       :tonight-count="store.tonight.length"

@@ -209,6 +209,8 @@ function main() {
         id: `r${createHash('sha1').update(`${category.key}/${name}`).digest('hex').slice(0, 10)}`,
         name,
         category: category.key,
+        // 无实拍图时前端用它当占位图案；与分类清单共用同一处定义。
+        emoji: category.emoji,
         image: image ? `/images/${encodeURIComponent(image)}` : null,
         ingredients,
         steps,
