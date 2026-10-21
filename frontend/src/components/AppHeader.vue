@@ -59,11 +59,10 @@ const browsing = computed(() => route.name === 'browse')
   width: 42px;
   height: 42px;
   border-radius: 14px;
-  background: var(--accent);
-  color: #2a1309;
+  background: var(--chili);
+  color: #fff7ee;
   font-size: 20px;
   font-weight: 800;
-  box-shadow: var(--shadow-pop);
 }
 
 .brand__text {
@@ -103,7 +102,7 @@ const browsing = computed(() => route.name === 'browse')
 }
 
 .topbar__link:hover {
-  background: var(--surface);
+  background: var(--surface-strong);
   color: var(--text);
 }
 
@@ -114,7 +113,7 @@ const browsing = computed(() => route.name === 'browse')
   padding: 9px 16px;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
-  background: var(--surface-strong);
+  background: var(--surface);
   font-size: 13.5px;
   font-weight: 600;
   transition:
@@ -124,7 +123,7 @@ const browsing = computed(() => route.name === 'browse')
 
 .topbar__menu:hover {
   transform: translateY(-1px);
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: var(--text-dim);
 }
 
 .topbar__menu em {
@@ -134,21 +133,16 @@ const browsing = computed(() => route.name === 'browse')
   height: 20px;
   padding: 0 6px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
-  color: var(--text);
+  background: rgba(200, 68, 44, 0.12);
+  color: var(--chili);
   font-size: 11.5px;
   font-style: normal;
   font-weight: 800;
 }
 
 .topbar__menu--accent {
-  border-color: rgba(255, 179, 64, 0.42);
-  background: rgba(255, 179, 64, 0.12);
-}
-
-.topbar__menu--accent em {
-  background: var(--accent);
-  color: #2a1309;
+  border-color: rgba(200, 68, 44, 0.4);
+  background: rgba(200, 68, 44, 0.06);
 }
 
 @media (max-width: 640px) {

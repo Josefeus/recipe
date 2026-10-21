@@ -19,7 +19,14 @@ const style = computed(() => ({ '--dish-hue': String(dishHue(props.recipe.name))
       decoding="async"
       draggable="false"
     />
-    <span v-else class="thumb__fallback" aria-hidden="true">{{ dishInitial(recipe.name) }}</span>
+    <!-- 无图时优先用分类 emoji 当占位图案（与筛选项同一套符号），缺失时退回菜名首字。 -->
+    <span
+      v-else
+      class="thumb__fallback"
+      :class="{ 'thumb__fallback--initial': !recipe.emoji }"
+      aria-hidden="true"
+      >{{ recipe.emoji || dishInitial(recipe.name) }}</span
+    >
   </span>
 </template>
 
@@ -31,18 +38,19 @@ const style = computed(() => ({ '--dish-hue': String(dishHue(props.recipe.name))
   height: 100%;
   overflow: hidden;
   border-radius: inherit;
+  /* 无图占位：按菜名色相铺一层浅粉彩，别抢实拍图的戏。 */
   background:
-    radial-gradient(120% 120% at 20% 15%, hsl(var(--dish-hue) 72% 46% / 0.55), transparent 62%),
-    linear-gradient(150deg, hsl(var(--dish-hue) 58% 22%), hsl(calc(var(--dish-hue) + 40) 52% 12%));
+    radial-gradient(120% 120% at 20% 15%, hsl(var(--dish-hue) 55% 90%), transparent 62%),
+    linear-gradient(150deg, hsl(var(--dish-hue) 48% 86%), hsl(calc(var(--dish-hue) + 40) 42% 76%));
 }
 
-/* 实拍图底色接近纯白，加一圈极淡的内描边让图片边缘与深色卡片分得开。 */
+/* 实拍图底色接近纯白，加一圈极淡的内描边让图片边缘与浅色卡片分得开。 */
 .thumb::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(63, 48, 32, 0.1);
   pointer-events: none;
 }
 
@@ -59,9 +67,15 @@ const style = computed(() => ({ '--dish-hue': String(dishHue(props.recipe.name))
   inset: 0;
   display: grid;
   place-items: center;
+  font-size: clamp(40px, 7vw, 72px);
+  line-height: 1;
+  filter: drop-shadow(0 6px 14px rgba(63, 48, 32, 0.22));
+}
+
+/* 退回首字时的排版：用同色相的深色字，别抢成主角。 */
+.thumb__fallback--initial {
   font-size: clamp(32px, 6vw, 68px);
   font-weight: 800;
-  color: rgba(255, 255, 255, 0.86);
-  text-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  color: hsl(var(--dish-hue) 42% 32%);
 }
 </style>

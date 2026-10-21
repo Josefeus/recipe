@@ -7,6 +7,8 @@ export interface Recipe {
   id: string
   name: string
   category: string
+  /** 分类 emoji，由数据构建脚本写入；后端数据或旧数据可能没有，用可选字段。 */
+  emoji?: string
   /** 实拍图地址；部分菜品没有图，为 null。 */
   image: string | null
   ingredients: string[]

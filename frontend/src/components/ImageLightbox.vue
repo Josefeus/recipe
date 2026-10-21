@@ -106,16 +106,21 @@ watch(
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(6, 5, 9, 0.78);
-  backdrop-filter: blur(14px);
+  background: rgba(31, 24, 18, 0.66);
 }
 
+/* 浅色主题里给面板一张纸质卡片，文字才读得清。 */
 .lightbox__panel {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: 14px;
+  gap: 12px;
   max-height: 100%;
+  padding: 18px 22px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.6);
 }
 
 .lightbox__close {
@@ -129,7 +134,7 @@ watch(
   height: 34px;
   border: 1px solid var(--border-strong);
   border-radius: 50%;
-  background: rgba(20, 16, 26, 0.92);
+  background: var(--surface);
   color: var(--text);
   font-size: 19px;
   line-height: 1;
@@ -140,7 +145,8 @@ watch(
 
 .lightbox__close:hover {
   transform: scale(1.06);
-  border-color: rgba(255, 179, 64, 0.6);
+  border-color: var(--chili);
+  color: var(--chili);
 }
 
 .lightbox__frame {
@@ -148,7 +154,7 @@ watch(
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-strong);
 }
 
 .lightbox__frame img {

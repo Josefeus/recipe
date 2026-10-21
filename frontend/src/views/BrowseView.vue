@@ -65,7 +65,7 @@ watch(
   <section class="browse__head">
     <p class="browse__eyebrow">菜谱总览</p>
     <h1>
-      <span class="gradient-text">{{ scopeLabel }}</span>
+      <span class="accent-text">{{ scopeLabel }}</span>
       都摊开给你看
     </h1>
     <p class="browse__sub">

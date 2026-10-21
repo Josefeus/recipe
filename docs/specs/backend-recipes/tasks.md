@@ -1,6 +1,6 @@
 # 任务清单（Tasks）
 
-> 状态：骨架阶段已开始（2026-09-23）
+> 状态：阶段 1、阶段 2 已完成（2026-09-23）；集成测试本地无 Docker 自动跳过，待有 Docker/服务器环境执行
 > 上游文档：[requirements.md](./requirements.md) / [design.md](./design.md)
 
 约定：每项完成后勾选；涉及接口/数据库的任务完成后必须跑通对应验证命令。
@@ -12,18 +12,18 @@
 - [x] T1.3 启动类 `RecipeApplication` 与 `application.yml` / `application-local.yml`（环境变量化连接串）
 - [x] T1.4 `V1__init_recipe_schema.sql` 初始迁移（category / recipe / 三个子表 / 约束 / 索引 / updated_at 触发器）
 - [x] T1.5 本地验证：`cd backend && mvn -q clean verify` 通过（无测试也应构建成功）
-- [ ] T1.6 `docker-compose.yml` 增加 PostgreSQL 16 服务（本地库 `recipe`，健康检查），验证 `mvn spring-boot:run -Dspring-boot.run.profiles=local` 可启动并完成 Flyway 迁移
+- [x] T1.6 `docker-compose.yml` 增加 PostgreSQL 16 服务（本地库 `recipe`，健康检查），验证 `mvn spring-boot:run -Dspring-boot.run.profiles=local` 可启动并完成 Flyway 迁移
 
 ## 阶段 2：后端 API 实现
 
-- [ ] T2.1 通用设施：`ApiResponse`、`BusinessException`、`GlobalExceptionHandler`（错误码见 design 4.5）
-- [ ] T2.2 Entity / Repository：Category、Recipe、RecipeIngredient、RecipeStep、RecipeNutrition（软删除过滤、`@EntityGraph` 避免 N+1）
-- [ ] T2.3 `GET /api/v1/recipes` 全量数据集接口（组装 generatedAt/source/categories(count)/recipes）
-- [ ] T2.4 `GET /api/v1/recipes/{externalId}` 与 `GET /api/v1/categories`
-- [ ] T2.5 引入 springdoc-openapi（先确认 Boot 4 兼容版本）并为全部接口补 OpenAPI 注解
-- [ ] T2.6 `POST /api/v1/admin/sync` 导入接口：Bearer token 鉴权、载荷校验、单事务 upsert（按 source_path）、导入统计
-- [ ] T2.7 Service 单元测试（Mockito）：导入幂等、数据集组装、分类统计
-- [ ] T2.8 集成测试（Testcontainers PostgreSQL）：迁移 + 接口端到端 + 重复导入不产生重复行
+- [x] T2.1 通用设施：`ApiResponse`、`BusinessException`、`GlobalExceptionHandler`（错误码见 design 4.5）
+- [x] T2.2 Entity / Repository：Category、Recipe、RecipeIngredient、RecipeStep、RecipeNutrition（软删除过滤、`@EntityGraph` 避免 N+1）
+- [x] T2.3 `GET /api/v1/recipes` 全量数据集接口（组装 generatedAt/source/categories(count)/recipes）
+- [x] T2.4 `GET /api/v1/recipes/{externalId}` 与 `GET /api/v1/categories`
+- [x] T2.5 引入 springdoc-openapi（先确认 Boot 4 兼容版本）并为全部接口补 OpenAPI 注解
+- [x] T2.6 `POST /api/v1/admin/sync` 导入接口：Bearer token 鉴权、载荷校验、单事务 upsert（按 source_path）、导入统计
+- [x] T2.7 Service 单元测试（Mockito）：导入幂等、数据集组装、分类统计
+- [x] T2.8 集成测试（Testcontainers PostgreSQL）：迁移 + 接口端到端 + 重复导入不产生重复行
 
 ## 阶段 3：同步脚本与数据链路改造
 

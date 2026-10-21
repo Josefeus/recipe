@@ -82,10 +82,14 @@ function onMediaClick(): void {
     box-shadow 0.22s ease;
 }
 
+.dish-card {
+  background: var(--surface);
+}
+
 .dish-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(255, 179, 64, 0.42);
-  box-shadow: 0 26px 50px -30px rgba(0, 0, 0, 0.9);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-lift);
 }
 
 .dish-card:hover .dish-card__media :deep(img) {
@@ -109,7 +113,7 @@ function onMediaClick(): void {
 
 .dish-card__media:hover :deep(.dish-zoom),
 .dish-card__media:focus-visible :deep(.dish-zoom) {
-  background: rgba(10, 8, 14, 0.88);
+  background: rgba(31, 24, 18, 0.85);
   transform: scale(1.08);
 }
 
@@ -141,9 +145,9 @@ function onMediaClick(): void {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(10, 8, 14, 0.62);
+  background: rgba(31, 24, 18, 0.55);
   backdrop-filter: blur(8px);
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 251, 244, 0.85);
   font-size: 15px;
   line-height: 1;
   transition:
@@ -153,7 +157,7 @@ function onMediaClick(): void {
 }
 
 .dish-card__fav:hover {
-  background: rgba(10, 8, 14, 0.85);
+  background: rgba(31, 24, 18, 0.8);
   transform: scale(1.08);
 }
 

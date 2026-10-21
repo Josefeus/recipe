@@ -141,8 +141,7 @@ function clearAll(): void {
   position: fixed;
   inset: 0;
   z-index: 40;
-  background: rgba(6, 5, 9, 0.62);
-  backdrop-filter: blur(4px);
+  background: rgba(47, 42, 36, 0.45);
 }
 
 .drawer {
@@ -156,8 +155,8 @@ function clearAll(): void {
   height: 100%;
   padding: 26px 24px;
   border-left: 1px solid var(--border);
-  background: linear-gradient(180deg, #16131f, #0c0a12);
-  box-shadow: -30px 0 80px -40px rgba(0, 0, 0, 0.9);
+  background: var(--surface);
+  box-shadow: -30px 0 80px -46px rgba(63, 48, 32, 0.5);
 }
 
 .drawer__head {
@@ -182,14 +181,14 @@ function clearAll(): void {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: var(--surface);
+  background: var(--surface-strong);
   font-size: 19px;
   line-height: 1;
   color: var(--text-muted);
 }
 
 .drawer__close:hover {
-  background: var(--surface-strong);
+  background: var(--border);
   color: var(--text);
 }
 
@@ -201,7 +200,7 @@ function clearAll(): void {
   padding: 4px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.28);
+  background: var(--bg-soft);
 }
 
 .tab {
@@ -223,8 +222,8 @@ function clearAll(): void {
 }
 
 .tab.is-on {
-  background: var(--accent);
-  color: #2a1309;
+  background: var(--chili);
+  color: #fff7ee;
   font-weight: 700;
 }
 
@@ -257,7 +256,7 @@ function clearAll(): void {
   padding: 8px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--surface);
+  background: var(--bg-soft);
 }
 
 .row__main {
@@ -307,7 +306,7 @@ function clearAll(): void {
 }
 
 .row__remove:hover {
-  background: rgba(255, 90, 60, 0.14);
+  background: rgba(200, 68, 44, 0.1);
   color: var(--chili);
 }
 
